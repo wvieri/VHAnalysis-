@@ -1,0 +1,2 @@
+test remove with 
+git rm file_name
