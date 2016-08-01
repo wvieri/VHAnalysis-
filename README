@@ -1,2 +1,3 @@
-#how to use the macro
-root -l VHPlotter.C+\(\"histoname\",1\);
+#how to use the macro, just ONE GO
+./runPlot.sh
+
