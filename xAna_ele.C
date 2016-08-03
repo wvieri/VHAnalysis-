@@ -11,7 +11,8 @@
 #include "interface/untuplizer.h"
 #include "interface/isPassZee.h"
 #include "interface/readSample.h"
-#include "interface/ele_PU/standalone_LumiReWeighting.cc"
+//#include "interface/ele_PU_71300/standalone_LumiReWeighting.cc"
+#include "interface/ele_PU_69200/standalone_LumiReWeighting.cc"
 #include "interface/dataFilter.h"
 
 
@@ -45,6 +46,7 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
 
   TH1D* h_totalEvents      = new TH1D("h_totalEv",          "totalEvents",       10,     0,   10);
 
+  TH1D* h_pu_nTrueInt      = new TH1D("h_pu_nTrueInt",      "h_pu_nTrueInt",     60,     0,   60);
   TH1D* h_nVtx             = new TH1D("h_nVtx",             "nVtx",              30,  -0.5, 29.5); 
 
   TH1D* h_leadElePt        = new TH1D("h_leadElePt",        "leadElePt",         16,     0,  800);
@@ -73,6 +75,7 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
 
   TH1D* h_ZHmass           = new TH1D("h_ZHmass",           "ZHmass",             50,    0, 5000);
 
+  h_pu_nTrueInt     ->Sumw2();
   h_nVtx            ->Sumw2();
 
   h_leadElePt       ->Sumw2();
@@ -116,6 +119,12 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
   int Max_number_to_read = 30000;
 //  int Max_number_to_read =  10;
 
+  bool PU_weight_flag = true;
+//  PU_weight_flag = false; // turn off the PU weight
+
+  if( PU_weight_flag ) cout<<"Will use Pile Up weight"<<endl;
+  else cout<<"Will not use Pile Up weight"<<endl;
+
   cout<<"staring loop events"<< endl;
 
   for( Long64_t ev = 0; ev < data.GetEntriesFast(); ev++ ){
@@ -132,7 +141,7 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
     // get Branch
 
     Bool_t   isData                  = data.GetBool("isData");
-
+    Float_t  ntrue                   = data.GetFloat("pu_nTrueInt");
     Int_t    nVtx                    = data.GetInt("nVtx");
 
     const TClonesArray* eleP4 = (TClonesArray*) data.GetPtrTObject("eleP4");
@@ -154,20 +163,22 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
     vector<float>* FATsubjetSDCSV    = data.GetPtrVectorFloat("FATsubjetSDCSV", FATnJet);
 
     // get Pile-Up weight 
-    
+
 
     double PU_weight_central =1;// weight=1 for data
 
-    if(!isData ){// for MC
-      standalone_LumiReWeighting LumiWeights_central(0);
+    if(!isData && PU_weight_flag){// for MC
 
-      Float_t ntrue= data.GetFloat("pu_nTrueInt");
+      standalone_LumiReWeighting LumiWeights_central(0);
       PU_weight_central = LumiWeights_central.weight(ntrue);
 
     }
-
+   
+//    cout<<"PU_weight_central: "<< PU_weight_central << endl;
     double eventWeight = PU_weight_central;   
 
+    h_pu_nTrueInt   ->Fill(ntrue , eventWeight);
+ 
     // data filter 
 
     bool CSCT       = FilterStatus(data, "Flag_CSCTightHaloFilter");
@@ -327,6 +338,7 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
 
   TFile* outFile = new TFile( save_path , "recreate");
 
+  h_pu_nTrueInt     ->Write("pu_nTrueInt");
   h_nVtx            ->Write("nVtx");
 
   h_leadElePt       ->Write("leadElePt");

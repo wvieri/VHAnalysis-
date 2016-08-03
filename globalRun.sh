@@ -1,28 +1,43 @@
 #!/bin/sh
 
+echo "start"
+date
+
+# -- decide run electron or muon variable here ----
+
+channel=ele 
+#channel=mu
+
+echo "channel=" $channel
 
 # which sample you want to run? 1 for True and 0 for False 
 
 flag_DATA_ele=0
 flag_DATA_mu=0
 
-flag_MC_DY_100=0
-flag_MC_DY_200=0
+flag_MC_DY_100=1
+flag_MC_DY_200=1
 flag_MC_DY_400=1
-flag_MC_DY_600=0
+flag_MC_DY_600=1
 
 flag_MC_TT=0
 
 flag_MC_diboson=0
 
+echo "which sample are used?"
+echo "flag_DATA_ele: $flag_DATA_ele , flag_DATA_mu: $flag_DATA_mu, flag_MC_DY_100: $flag_MC_DY_100 , flag_MC_DY_200: $flag_MC_DY_200 , flag_MC_DY_400: $flag_MC_DY_400 , flag_MC_DY_600: $flag_MC_DY_600 , flag_MC_TT: $flag_MC_TT , flag_MC_diboson: $flag_MC_diboson "
 
-# -- decide run electron or muon variable here ---- 
+# ----------------------------------
 
-macro=xAna_ele
-#macro=xAna_mu
+if [ $channel == ele  ];then
+  macro=xAna_ele
+  outputFolder=output_ele
+fi
 
-outputFolder=output_ele
-#outputFolder=output_mu
+if [ $channel == mu  ];then
+  macro=xAna_mu
+  outputFolder=output_mu
+fi
 
 
 # ----------------------------------
@@ -143,6 +158,9 @@ fi
 # delete temp file and end the code
 rm -f inputdir.txt
 rm -f *.pcm *.d *.so
+
+echo "finish"
+date
 
 exit
 # -------- end ----------
