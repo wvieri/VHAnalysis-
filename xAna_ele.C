@@ -49,7 +49,7 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
   TH1D* h_pu_nTrueInt      = new TH1D("h_pu_nTrueInt",      "h_pu_nTrueInt",     60,     0,   60);
   TH1D* h_nVtx             = new TH1D("h_nVtx",             "nVtx",              30,  -0.5, 29.5); 
 
-  TH1D* h_leadElePt        = new TH1D("h_leadElePt",        "leadElePt",         16,     0,  800);
+  TH1D* h_leadElePt        = new TH1D("h_leadElePt",        "leadElePt",         32,     10,  810);
   TH1D* h_leadEleEta       = new TH1D("h_leadEleEta",       "leadEleEta",        40,    -4,    4);
   TH1D* h_subleadElePt     = new TH1D("h_subleadElePt",     "subleadElePt",      25,     0,  500);
   TH1D* h_subleadEleEta    = new TH1D("h_subleadEleEta",    "subleadEleEta",     40,    -4,    4);
@@ -59,7 +59,7 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
   TH1D* h_Zeta             = new TH1D("h_Zeta",             "Zeta",              40,    -4,    4);
   TH1D* h_ZRapidity        = new TH1D("h_ZRapidity",        "ZRapidity",         40,    -4,    4);
 
-  TH1D* h_FATjetPt         = new TH1D("h_FATjetPt",         "FATjetPt",           20,  100, 1000);
+  TH1D* h_FATjetPt         = new TH1D("h_FATjetPt",         "FATjetPt",           50,    0, 1000);
   TH1D* h_FATjetEta        = new TH1D("h_FATjetEta",        "FATjetEta",          20,   -4,    4);
   TH1D* h_FATjetCISVV2     = new TH1D("h_FATjetCISVV2",     "FATjetCISVV2",       20,    0,  1.2);
   TH1D* h_FATjetSDmass     = new TH1D("h_FATjetSDmass",     "FATjetSDmass",       20,    0,  200);
@@ -69,9 +69,15 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
   TH1D* h_FATjetTau2       = new TH1D("h_FATjetTau2",       "FATjetTau2",         20,    0,    1);
   TH1D* h_FATjetTau2dvTau1 = new TH1D("h_FATjetTau2dvTau1", "FATjetTau2dvTau1",   20,    0,    1);
 
-  TH1D* h_FATsubjetPt      = new TH1D("h_FATsubjetPt",      "FATsubjetPt",        20,    0,  800);
-  TH1D* h_FATsubjetEta     = new TH1D("h_FATsubjetEta",     "FATsubjetEta",       20,   -4,    4);  
-  TH1D* h_FATsubjetSDCSV   = new TH1D("h_FATsubjetSDCSV",   "FATsubjetSDCSV",     20,    0,  1.2);
+
+  TH1D* h_FATnSubjet                 = new TH1D("h_FATnSubjet",              "FATnSubjet",                 5,    0,    5);
+  TH1D* h_FATsubjetLeadingPt         = new TH1D("h_FATsubjetLeadingPt",      "FATsubjetLeadingPt",        20,    0,  800);
+  TH1D* h_FATsubjetLeadingEta        = new TH1D("h_FATsubjetLeadingEta",     "h_FATsubjetLeadingEta",     20,   -4,    4);
+  TH1D* h_FATsubjetLeadingSDCSV      = new TH1D("h_FATsubjetLeadingSDCSV",   "h_FATsubjetLeadingSDCSV",   20,    0,  1.2);
+  TH1D* h_FATsubjetSubLeadingPt      = new TH1D("h_FATsubjetSubLeadingPt",   "FATsubjetSubLeadingPt",     20,    0,  800);
+  TH1D* h_FATsubjetSubLeadingEta     = new TH1D("h_FATsubjetSubLeadingEta",  "h_FATsubjetSubLeadingEta",  20,   -4,    4);
+  TH1D* h_FATsubjetSubLeadingSDCSV   = new TH1D("h_FATsubjetSubLeadingSDCSV","h_FATsubjetSubLeadingSDCSV",20,    0,  1.2);
+
 
   TH1D* h_ZHmass           = new TH1D("h_ZHmass",           "ZHmass",             50,    0, 5000);
 
@@ -97,9 +103,14 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
   h_FATjetTau1      ->Sumw2();
   h_FATjetTau2      ->Sumw2();
   h_FATjetTau2dvTau1->Sumw2();
-  h_FATsubjetPt     ->Sumw2();
-  h_FATsubjetEta    ->Sumw2();
-  h_FATsubjetSDCSV  ->Sumw2();
+
+  h_FATnSubjet 		     ->Sumw2();
+  h_FATsubjetLeadingPt       ->Sumw2();
+  h_FATsubjetLeadingEta      ->Sumw2();
+  h_FATsubjetLeadingSDCSV    ->Sumw2();
+  h_FATsubjetSubLeadingPt    ->Sumw2();
+  h_FATsubjetSubLeadingEta   ->Sumw2();
+  h_FATsubjetSubLeadingSDCSV ->Sumw2();
 
   h_ZHmass          ->Sumw2();
 
@@ -136,7 +147,6 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
 
     data.GetEntry(ev);
 
-    h_totalEvents->Fill(1,1);
 
     // get Branch
 
@@ -177,6 +187,7 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
 //    cout<<"PU_weight_central: "<< PU_weight_central << endl;
     double eventWeight = PU_weight_central;   
 
+    h_totalEvents->Fill(1,eventWeight);
     h_pu_nTrueInt   ->Fill(ntrue , eventWeight);
  
     // data filter 
@@ -250,6 +261,7 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
     }
 
     if( goodFATJetID < 0 ) continue;
+//    cout<<"goodFATJetID: "<< goodFATJetID << endl;
 
     counter_3++;
 
@@ -302,7 +314,14 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
 
     // SubJet 
 
+    int nSubJet = FATnSubSDJet[goodFATJetID];
+    h_FATnSubjet->Fill( nSubJet , eventWeight  );
+
+    std::vector<double> subjetPt;  subjetPt.clear();
+    std::vector<double> subjetEta; subjetEta.clear();
+
     for(Int_t is = 0; is < FATnSubSDJet[goodFATJetID]; ++is){
+
 
       TLorentzVector l4_subjet(0,0,0,0);
 
@@ -311,11 +330,52 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
 			   FATsubjetSDPz[goodFATJetID][is],
 			   FATsubjetSDE [goodFATJetID][is]);
 
-      h_FATsubjetPt   ->Fill(l4_subjet.Pt(),eventWeight);
-      h_FATsubjetEta  ->Fill(l4_subjet.Eta(),eventWeight);
-      h_FATsubjetSDCSV->Fill(FATsubjetSDCSV[goodFATJetID][is],eventWeight);
+      subjetPt.push_back( l4_subjet.Pt() );
+      subjetEta.push_back( l4_subjet.Eta() );
+
+//      h_FATsubjetPt   ->Fill(l4_subjet.Pt(),eventWeight);
+//      h_FATsubjetEta  ->Fill(l4_subjet.Eta(),eventWeight);
+//      h_FATsubjetSDCSV->Fill(FATsubjetSDCSV[goodFATJetID][is],eventWeight);
 
     }
+
+    if( nSubJet == 1 ){    
+      h_FATsubjetLeadingPt     ->Fill( subjetPt[0]  , eventWeight);
+      h_FATsubjetLeadingEta    ->Fill( subjetEta[0]  , eventWeight);
+      h_FATsubjetLeadingSDCSV  ->Fill( FATsubjetSDCSV[goodFATJetID][0]  , eventWeight);
+    }
+
+    if( nSubJet > 1 ){
+
+      double leading_pt_temp =-99; double subleading_pt_temp =-99;
+      unsigned int leading_index =-1;     unsigned  int subleading_index =-1;
+
+      for(unsigned int is=0; is<subjetPt.size() ; is++){        
+
+        if( subjetPt[is] > leading_pt_temp ){leading_pt_temp = subjetPt[is] ; leading_index=is; } 
+      }
+      
+      for(unsigned int is=0; is<subjetPt.size() ; is++){
+        if( is == leading_index) continue;
+        if( subjetPt[is] > subleading_pt_temp ){subleading_pt_temp = subjetPt[is] ; subleading_index=is; }
+      }
+
+
+      h_FATsubjetLeadingPt       ->Fill( subjetPt[leading_index]     , eventWeight);    
+      h_FATsubjetLeadingEta    ->Fill( subjetEta[leading_index]  , eventWeight);
+      h_FATsubjetLeadingSDCSV  ->Fill( FATsubjetSDCSV[goodFATJetID][leading_index]  , eventWeight);
+
+      h_FATsubjetSubLeadingPt    ->Fill( subjetPt[subleading_index]  , eventWeight);
+      h_FATsubjetSubLeadingEta    ->Fill( subjetEta[subleading_index]  , eventWeight);
+      h_FATsubjetSubLeadingSDCSV  ->Fill( FATsubjetSDCSV[goodFATJetID][subleading_index]  , eventWeight);
+
+
+    }
+
+
+
+
+//    if(subjet_pt2>subjet_pt1)cout<<"subjet_pt1: "<<subjet_pt1<<" subjet_pt2: "<<subjet_pt2<< endl;
 
     // ZH invariant mass
     
@@ -361,9 +421,13 @@ void xAna_ele(std::string inputFile, std::string outputFolder, std::string outpu
   h_FATjetTau2      ->Write("FATjetTau2");
   h_FATjetTau2dvTau1->Write("FATjetTau2dvTau1");
 
-  h_FATsubjetPt     ->Write("FATsubjetPt");
-  h_FATsubjetEta    ->Write("FATsubjetEta");
-  h_FATsubjetSDCSV  ->Write("FATsubjetSDCSV");
+  h_FATnSubjet            ->Write("FATnSubjet");
+  h_FATsubjetLeadingPt    ->Write("FATsubjetLeadingPt");    
+  h_FATsubjetLeadingEta   ->Write("FATsubjetLeadingEta");
+  h_FATsubjetLeadingSDCSV ->Write("FATsubjetLeadingSDCSV");
+  h_FATsubjetSubLeadingPt    ->Write("FATsubjetSubLeadingPt");
+  h_FATsubjetSubLeadingEta   ->Write("FATsubjetSubLeadingEta");
+  h_FATsubjetSubLeadingSDCSV ->Write("FATsubjetSubLeadingSDCSV");
 
   h_ZHmass          ->Write("ZHmass");
 
