@@ -35,19 +35,24 @@
 #include "TLegend.h"
 #include "TLatex.h"
 #include "TVirtualFitter.h"
+#include "TString.h"
 
 #include <fstream>
 #include <sstream>
 #include <iomanip>
 #include <iostream>
 #include <TSystemDirectory.h>
-#include "interface/setNCUStyle.h"
-#include "interface/readHists.h"
 
 
-string path = "/afs/cern.ch/user/v/vieri/work/ZH_Analysis/CMSSW_8_0_15/src/ZHAnalysis/DataMC_comparison/";
+//string path = "/afs/cern.ch/work/y/yuchang/public/show_vieri_DataMC_comparison/output_with_PUweight/";
 
-void VHPlotter(string title="", int plot=0) {
+string path = "/afs/cern.ch/work/y/yuchang/ZH_analysis_with_2016_data/CMSSW_8_0_8/src/DataMC_comparison/test_ele_with_PUweight/output_ele/";
+
+//string path = "/afs/cern.ch/user/v/vieri/work/ZH_Analysis/CMSSW_8_0_15/src/ZHAnalysis/DataMC_comparison/";
+
+//void VHPlotter(string title="", int plot=0) {
+void VHPlotter(string title="", int plot=0,   TCanvas* c1=0 ) {
+
 
 string subdir="0";
 string postfix="";
@@ -173,8 +178,8 @@ hs->Add(h_mc3);
 hs->Add(h_mc2);
 hs->Add(h_mcDY);
 
-TCanvas* c1 = 0;
-c1 = new TCanvas("c","c",10,10,800,600);
+//TCanvas* c1 = 0;
+//c1 = new TCanvas("c","c",10,10,800,600);
 c1->cd();
 
 TPad *pad1 = new TPad("pad1","pad1",0.0,0.3,1.0,1.0);
@@ -187,10 +192,10 @@ hs->Draw("HIST");
 hs->GetYaxis()->SetTitle("Events");
 hs->GetYaxis()->SetTitleSize(0.05);
 hs->GetYaxis()->SetLabelSize(0.045);
-hs->GetYaxis()->SetTitleOffset(0.7);
+hs->GetYaxis()->SetTitleOffset(1.0);// 0.7
 hs->SetMinimum(8);
 hs->SetMaximum(1.2*hs->GetMaximum());
-
+if (title=="ZHmass") { hs->GetXaxis()->SetRangeUser(0, 3000); }
 
 h_data->Draw("EPX0SAMES");
 h_data->SetMarkerColor(kBlack);
@@ -199,7 +204,10 @@ h_data->SetMarkerSize (1.0);
 h_data->SetStats(0);
 
 TLegend *leg;
-leg = new TLegend(0.65, 0.547, 0.91, 0.88);
+
+if (title=="FATjetTau2dvTau1") { leg = new TLegend(0.15, 0.547, 0.41, 0.88); }
+else { leg = new TLegend(0.65, 0.547, 0.91, 0.88);}
+//leg = new TLegend(0.65, 0.547, 0.91, 0.88);
 leg->SetBorderSize(0);
 leg->SetEntrySeparation(0.01);
 leg->SetFillColor(0);
@@ -216,6 +224,13 @@ leg->AddEntry(h_mc8,"ZH powheg","f");
 
 leg->Draw();
 
+TLatex *lar = new TLatex();
+lar->SetNDC(kTRUE);
+lar->SetTextSize(0.04);
+lar->SetLineWidth(5);
+lar->DrawLatex(0.14, 0.94, "CMS #it{#bf{2016}}");
+lar->DrawLatex(0.60, 0.94, "L = 4.327 fb^{-1} at #sqrt{s} = 13 TeV");
+
 pad1->Update();
 c1->Update();
 
@@ -223,7 +238,7 @@ c1->cd();
 
 TH1F *h_ratio = (TH1F*)h_data->Clone("h_ratio");
 
-TPad *pad2 = new TPad("pad2","pad2",0,0,1,0.3);
+TPad *pad2 = new TPad("pad2","pad2",0,0,1,0.3);// 0.3
 pad2->SetTopMargin(0);
 pad2->SetBottomMargin(0.3);
 pad2->Draw();
@@ -265,7 +280,7 @@ if (title=="Zpt") {
   h_ratio->GetXaxis ()->SetTitle("FAT Jet #tau_{1}");
 } else if (title=="FATjetTau2") {
   h_ratio->GetXaxis ()->SetTitle("FAT Jet #tau_{2}");
-} else if (title=="FATjetTau12dvTau1") {
+} else if (title=="FATjetTau2dvTau1") {
   h_ratio->GetXaxis ()->SetTitle("FAT Jet #tau_{21}");
 } else if (title=="FATsubjetPt") {
   h_ratio->GetXaxis ()->SetTitle("FAT SubJet p_{T} [GeV/c]");
@@ -275,9 +290,9 @@ if (title=="Zpt") {
   h_ratio->GetXaxis ()->SetTitle("FAT SubJet Soft Drop CSV [GeV/c]");
 } else if (title=="ZHmass") {
   h_ratio->GetXaxis ()->SetTitle("ZH invariant mass [GeV/c^{2}]");
+}
 
-
-
+if (title=="ZHmass") { h_ratio->GetXaxis()->SetRangeUser(0, 3000); }
 h_ratio->GetXaxis()->SetTitleSize(0.11);
 h_ratio->GetXaxis()->SetLabelFont(42);
 h_ratio->GetXaxis()->SetLabelSize(0.10);
@@ -298,12 +313,14 @@ OLine->SetLineColor(kRed);
 OLine->SetLineWidth(2);
 OLine->Draw();
 
+/*
 TLatex *lar = new TLatex();
 lar->SetNDC(kTRUE);
 lar->SetTextSize(0.04);
 lar->SetLineWidth(5);
 lar->DrawLatex(0.14, 0.94, "CMS #it{#bf{2016}}");
 lar->DrawLatex(0.60, 0.94, "L = 4.327 fb^{-1} at #sqrt{s} = 13 TeV");
+*/
 
 c1->cd();
 c1->SaveAs((path + title + ".pdf").c_str());

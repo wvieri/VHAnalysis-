@@ -1,2 +1,13 @@
-#how to use the macro
-root -l VHPlotter.C+\(\"histoname\",1\);
+# how to run analysis code to read ntuples, apply selection and svae histogram
+
+choose flag_xxx = 1/0 to decide which sample you want to run
+choose macro = xAna_ele/xAna_mu to decide electron/muon channel you want to run
+choose outputFolder = output_ele/output_mu for the output file folder 
+
+Then just one Go
+./globalRun.sh 
+
+
+# how to use the make plot, just ONE GO
+./runPlot.sh
+

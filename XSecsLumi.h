@@ -11,12 +11,14 @@ double Xsec_dy_amc1 = 147.40 *1.23;
 
 //////////////////////// DY MadGraph_aMC@NLO + Pythia 8 HT200to400
 
-double Ngen_dy_amc2 = 8348679;
+//double Ngen_dy_amc2 = 8348679;
+  double Ngen_dy_amc2 = 9628177;
 double Xsec_dy_amc2 = 41*1.23; 
 
 //////////////////////// DY MadGraph_aMC@NLO + Pythia 8 HT400to600
 
-double Ngen_dy_amc3 = 1070450;
+//double Ngen_dy_amc3 = 1070450;
+  double Ngen_dy_amc3 = 1070454;
 double Xsec_dy_amc3 = 5.678*1.23;
  
 //////////////////////// DY MadGraph_aMC@NLO + Pythia 8 HT600toInf
